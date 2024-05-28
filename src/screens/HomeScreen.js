@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button, TouchableOpacity, Image } from 'react-native';
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   return (
 
     
@@ -49,7 +49,7 @@ export default function HomeScreen() {
 
         <View style={styles.buttonItem}> 
           {/*Quizzes button*/}
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Quizzes")}>
             <Text style={styles.buttonText}>Quizzes</Text>
             <Image source={{uri: "https://media.licdn.com/dms/image/D5612AQElp0Le7qEypw/article-cover_image-shrink_720_1280/0/1701747426020?e=2147483647&v=beta&t=Pfe6dJSie-wG5yZQfTRoPEbGgpzDJv7mOhB1jybLEVY"}} style={styles.image} />
           </TouchableOpacity>
@@ -61,7 +61,7 @@ export default function HomeScreen() {
 
       <View style={styles.buttonItem}> 
           {/*New Language*/}
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("New Language")}>
             <Text style={styles.buttonText}>New Language</Text>
             <Image source={{uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVv_cUUC7tpBp-03iqgyUuojItE9iX3jMlSseGCJsIRg&s"}} style={styles.image} />
           </TouchableOpacity>
