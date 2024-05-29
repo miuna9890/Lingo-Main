@@ -49,7 +49,7 @@ export default function HomeScreen({ navigation }) {
 
         <View style={styles.buttonItem}> 
           {/*Quizzes button*/}
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Quizzes")}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("QuizLang")}>
             <Text style={styles.buttonText}>Quizzes</Text>
             <Image source={{uri: "https://media.licdn.com/dms/image/D5612AQElp0Le7qEypw/article-cover_image-shrink_720_1280/0/1701747426020?e=2147483647&v=beta&t=Pfe6dJSie-wG5yZQfTRoPEbGgpzDJv7mOhB1jybLEVY"}} style={styles.image} />
           </TouchableOpacity>

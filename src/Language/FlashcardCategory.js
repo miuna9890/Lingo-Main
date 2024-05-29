@@ -3,17 +3,16 @@ import { View, Text, Button, TouchableOpacity, StyleSheet } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 
 const categories = [
-        { name: 'Fruits', screen: 'Quiz' },
-        { name: 'Alphabets', screen: 'Quiz' },
-        { name: 'Animals', screen: 'Quiz' },
+        { name: 'Fruits', screen: 'Flashcards' },
+        { name: 'Alphabets', screen: 'Flashcards' },
+        { name: 'Animals', screen: 'Flashcards' },
       ];
 
-const Quizzes = ({route, navigation }) => {
-  const { languages } = route.params;
+const FlashcardCategory = ({ route, navigation }) => {
+    const { language } = route.params;
     return (
       <View style={styles.container}>
-        <Text style={styles.title}> Quiz yourself! </Text>
-        <Text style={styles.title}> {languages} Choose a Category </Text>
+        <Text style={styles.title}>{language} Categories </Text>
         <FlatList
         data = {categories}
         keyExtractor={(item) => item.name}
@@ -63,5 +62,5 @@ const Quizzes = ({route, navigation }) => {
     },
   });
   
-  export default Quizzes; 
+  export default FlashcardCategory; 
  
