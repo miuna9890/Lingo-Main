@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
- const Flashcard = ({ question, answer }) => {
+ const Flashcard = ({ question, answer, imageUrl }) => {
     const [showAnswer, setShowAnswer] = useState(false);
   
     const toggleAnswer = () => {
@@ -10,6 +10,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
   
     return (
       <TouchableOpacity onPress={toggleAnswer} style={styles.card}>
+        <Image source={{ uri: imageUrl }} style={styles.image} />
         <View style={styles.cardContent}>
         <Text style={styles.text}>{showAnswer ? answer : question}</Text>
         </View>
@@ -48,6 +49,11 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
       textAlign: 'center',
       fontWeight: "bold",
       color: "#E91E63"
+    },
+    image: {
+      width: 100, 
+      height: 100,
+      marginBottom: 10, 
     },
   });
   
