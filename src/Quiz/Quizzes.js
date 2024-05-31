@@ -1,12 +1,8 @@
 import React from 'react';
 import { View, Text, Button, TouchableOpacity, StyleSheet } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import QuizCategoryData from './QuizCategoryData';
 
-const categories = [
-        { name: 'Fruits', screen: 'Quiz' },
-        { name: 'Alphabets', screen: 'Quiz' },
-        { name: 'Animals', screen: 'Quiz' },
-      ];
 
 const Quizzes = ({route, navigation }) => {
   const { languages } = route.params;
@@ -15,7 +11,7 @@ const Quizzes = ({route, navigation }) => {
         <Text style={styles.title}> Quiz yourself! </Text>
         <Text style={styles.title}> {languages} Choose a Category </Text>
         <FlatList
-        data = {categories}
+        data = {QuizCategoryData}
         keyExtractor={(item) => item.name}
         renderItem={({item}) => (
         <TouchableOpacity

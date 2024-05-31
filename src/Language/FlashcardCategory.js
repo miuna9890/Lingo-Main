@@ -1,12 +1,8 @@
 import React from 'react';
 import { View, Text, Button, TouchableOpacity, StyleSheet } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import FlashcardCategoryData from './FlashcardCategoryData';
 
-const categories = [
-        { name: 'Fruits', screen: 'Flashcards' },
-        { name: 'Alphabets', screen: 'Flashcards' },
-        { name: 'Animals', screen: 'Flashcards' },
-      ];
 
 const FlashcardCategory = ({ route, navigation }) => {
     const { language } = route.params;
@@ -14,7 +10,7 @@ const FlashcardCategory = ({ route, navigation }) => {
       <View style={styles.container}>
         <Text style={styles.title}>{language} Categories </Text>
         <FlatList
-        data = {categories}
+        data = {FlashcardCategoryData}
         keyExtractor={(item) => item.name}
         renderItem={({item}) => (
         <TouchableOpacity
