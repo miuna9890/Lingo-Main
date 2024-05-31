@@ -1,17 +1,29 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import Flashcard from './Flashcard';
+import Swiper from 'react-native-deck-swiper'; // Import Swiper
 import FlashcardQnsData from './FlashcardQnsData';
 
-const FlashcardScreen = ({route}) => {
+const FlashcardScreen = ({ route }) => {
   const { category } = route.params;
   const cards = FlashcardQnsData[category];
 
   return (
     <View style={styles.container}>
-      {cards.map((card, index) => (
-        <Flashcard key={index} question={card.question} answer={card.answer} imageUrl={card.imageUrl} />
-      ))}
+      <Swiper
+        cards={cards} //the data set
+        renderCard={(card) => <Flashcard question={card.question} answer={card.answer} imageUrl={card.imageUrl} />}
+        onSwiped={() => {}}
+        onSwipedLeft={() => {}}
+        onSwipedRight={() => {}}
+        cardIndex={0}
+        backgroundColor="transparent"
+        stackSize={2} //num of cards in stack
+        stackSeparation={15}
+        animateOverlayLabelsOpacity
+        animateCardOpacity
+        swipeBackCard
+      />
     </View>
   );
 };
@@ -26,12 +38,3 @@ const styles = StyleSheet.create({
 });
 
 export default FlashcardScreen;
-  
-  
-  
-  
-  
-  
-  
-  
-  
