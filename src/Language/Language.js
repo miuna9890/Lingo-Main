@@ -1,20 +1,16 @@
 import React from 'react';
 import { View, Text, Button, TouchableOpacity, StyleSheet } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import LanguageListData from './LangaugeListData';
 
-const langauges = [
-  { name: "Japanese", screen: "Category"},
-  { name: "Korean", screen: "Category"},
-  { name: "Malay", screen: "Category"},
-  { name: "French", screen: "Category"},
-];
+
 
 const Language = ({navigation}) => {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Choose a Langauge!</Text>
         <FlatList
-        data = {langauges}
+        data = {LanguageListData}
         keyExtractor={(item) => item.name}
         renderItem={({item}) => (
         <TouchableOpacity
