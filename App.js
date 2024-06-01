@@ -9,6 +9,7 @@ import QuizScreen from './src/Quiz/QuizScreen'
 import Language from './src/Language/Language'
 import FlashcardCategory from './src/Language/FlashcardCategory'
 import QuizLanglist from './src/Quiz/QuizLanglist';
+import ProfileScreen from './src/screens/ProfileScreen';
 
 
 const Stack = createStackNavigator();
@@ -17,7 +18,8 @@ const App = () => {
   return (
     <NavigationContainer>
 
-     <Stack.Navigator initialRouteName="Login">
+     <Stack.Navigator initialRouteName="Home">
+     <Stack.Screen name="Profile" component={ProfileScreen} />
 
      <Stack.Screen name="Login" component={LoginScreen} />
      <Stack.Screen name ="Home" component={HomeScreen} />
