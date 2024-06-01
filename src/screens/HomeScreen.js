@@ -67,6 +67,14 @@ export default function HomeScreen({ navigation }) {
           </TouchableOpacity>
       </View>
 
+      <View style={styles.buttonItem}> 
+          {/*New Language*/}
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Login")}>
+            <Text style={styles.buttonText}>Sign in</Text>
+            <Image source={{uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVv_cUUC7tpBp-03iqgyUuojItE9iX3jMlSseGCJsIRg&s"}} style={styles.image} />
+          </TouchableOpacity>
+      </View>
+
       </View>
 
     </View>
