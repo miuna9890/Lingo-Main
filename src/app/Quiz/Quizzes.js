@@ -35,7 +35,7 @@ const Quizzes = ({route, navigation }) => {
         renderItem={({item}) => (
         <TouchableOpacity
         style = {styles.categoryButton}
-        onPress={() => navigation.navigate(item.screen, {category: item.category_name})}
+        onPress={() => navigation.navigate(item.screen, {category: item.category_name, language: languages})}
         >
           <Text style={styles.categoryText}>{item.category_name}</Text>
         </TouchableOpacity>
