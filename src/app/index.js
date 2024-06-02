@@ -1,26 +1,27 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './src/screens/HomeScreen';
-import LoginScreen from './src/screens/LoginScreen';
-import FlashcardScreen from './src/flash/FlashcardScreen'
-import Quizzes from './src/Quiz/Quizzes'
-import QuizScreen from './src/Quiz/QuizScreen'
-import Language from './src/Language/Language'
-import FlashcardCategory from './src/Language/FlashcardCategory'
-import QuizLanglist from './src/Quiz/QuizLanglist';
-import ProfileScreen from './src/screens/ProfileScreen';
+import HomeScreen from '../screens/HomeScreen';
+import LoginScreen from '../screens/LoginScreen';
+import FlashcardScreen from './flash/FlashcardScreen'
+import Quizzes from './Quiz/Quizzes'
+import QuizScreen from './Quiz/QuizScreen'
+import Languagee from './Language/Language'
+import FlashcardCategory from './Language/FlashcardCategory'
+import QuizLanglist from './Quiz/QuizLanglist';
+import ProfileScreen from '../screens/ProfileScreen';
+import Language from './Language/Language'
 
 
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
-    <NavigationContainer>
+    <>
 
      <Stack.Navigator initialRouteName="Home">
+     <Stack.Screen name="Lang" component={Languagee} />
      <Stack.Screen name="Profile" component={ProfileScreen} />
-
      <Stack.Screen name="Login" component={LoginScreen} />
      <Stack.Screen name ="Home" component={HomeScreen} />
      <Stack.Screen name ="QuizLang" component={QuizLanglist} />
@@ -32,7 +33,7 @@ const App = () => {
 
       </Stack.Navigator>
 
-      </NavigationContainer>
+      </>
   );
 };
 
