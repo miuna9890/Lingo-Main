@@ -1,21 +1,43 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button, TouchableOpacity, StyleSheet } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import FlashcardCategoryData from './FlashcardCategoryData';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = 'https://ofuxcybiaalpnafsswou.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9mdXhjeWJpYWFscG5hZnNzd291Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTcyNTA5MzUsImV4cCI6MjAzMjgyNjkzNX0.RujmbMzYZv7V4vvUx06w8Z5e5NejLA8H_ZCs6hDYkOI';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 
 const FlashcardCategory = ({ route, navigation }) => {
-    const { language } = route.params;
+    const { languages } = route.params;
+    const [categoryList, setCategoryList] = useState([]);
+
+    useEffect(() => {
+        async function fetchCategories() {
+            const { data, error } = await supabase.from('categories').select('*').eq('language', languages);
+            if (error) {
+                console.error('Error fetching categories:', error.message);
+            } else {
+                setCategoryList(data);
+            }
+        }
+
+        fetchCategories();
+
+    }, [languages]);
+
+    //fetch data from supabase table
+
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{language} Categories </Text>
+        <Text style={styles.title}>{languages} Categories </Text>
         <FlatList
-        data = {FlashcardCategoryData}
+        data = {categoryList}
         keyExtractor={(item) => item.name}
         renderItem={({item}) => (
         <TouchableOpacity
         style = {styles.categoryButton}
-        onPress={() => navigation.navigate(item.screen, {category: item.name})}
+        onPress={() => navigation.navigate(item.screen, {category: item.name, language: languages})}
         >
           <Text style={styles.categoryText}>{item.name}</Text>
         </TouchableOpacity>
