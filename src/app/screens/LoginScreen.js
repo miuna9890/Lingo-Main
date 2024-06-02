@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { AppState } from 'react-native'
 import { Alert, StyleSheet, View, Button, TextInput } from 'react-native'
-import { supabase } from '../../lib/supabase'
+import { supabase } from '../../../lib/supabase'
+import { useNavigation } from '@react-navigation/native';
 
 // Tells Supabase Auth to continuously refresh the session automatically
 // if the app is in the foreground. When this is added, you will continue
@@ -20,6 +21,8 @@ export default function Auth() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const navigation = useNavigation(); //set up navigation to welcome screen
+
 
   async function signInWithEmail() {
     setLoading(true)
@@ -28,9 +31,16 @@ export default function Auth() {
       password: password,
     })
 
-    if (error) Alert.alert(error.message)
+    if (error) {
+      Alert.alert(error.message);
+    } else {
+      // Navigate to Home screen upon successful sign-in
+      navigation.navigate('Home');
+    }
     setLoading(false)
-  }
+  } 
+
+  //sign in with email and password
 
   async function signUpWithEmail() {
     setLoading(true)
@@ -46,6 +56,8 @@ export default function Auth() {
     else if (!session) Alert.alert('Please check your inbox for email verification!')
     setLoading(false)
   }
+
+    //sign up with email and password
 
   return (
     <View style={styles.container}>
@@ -67,12 +79,13 @@ export default function Auth() {
         />
       </View>
       <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Button title="Sign in" disabled={loading} onPress={() => signInWithEmail()} />
+        <Button title="Sign in" disabled={loading} onPress={() => signInWithEmail()} /> 
       </View>
       <View style={styles.verticallySpaced}>
         <Button title="Sign up" disabled={loading} onPress={() => signUpWithEmail()} />
       </View>
     </View>
+    //calls the respective sign in or sign up fucntion set up with supabase auth
   )
 }
 

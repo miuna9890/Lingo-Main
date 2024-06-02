@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList, Text, Image} from 'react-native';
-import Flashcard from './Flashcard';
-import Swiper from 'react-native-deck-swiper'; // Import Swiper
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = 'https://ofuxcybiaalpnafsswou.supabase.co';
@@ -19,8 +17,8 @@ const FlashcardScreen = ({ route }) => {
         const { data, error } = await supabase
           .from('flashcards')
           .select('*')
-          .eq('category', category)
-          .eq('language', language);
+          .eq('category', category) //filter by category
+          .eq('language', language); //filter by language
 
         if (error) {
           console.error('Error fetching flashcards:', error.message);
@@ -41,11 +39,10 @@ const FlashcardScreen = ({ route }) => {
     <View style={styles.container}>
       <Text style={styles.title}>{language} {category} </Text>
       <FlatList
-      data = {flashcards}
+      data = {flashcards} //data
       keyExtractor={(item) => item.question}
       renderItem={({item}) => (
         <View>
-    
         <Text style={styles.categoryText}>{item.question}</Text>
         <Image source={{ uri: item.imageurl }} style={styles.image} />
         <Text style={styles.categoryText}>{item.answer}</Text>

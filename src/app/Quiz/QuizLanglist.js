@@ -31,7 +31,7 @@ const QuizLanglist = ({navigation}) => {
         renderItem={({item}) => (
         <TouchableOpacity
         style = {styles.languageButton}
-        onPress={() => navigation.navigate(item.screen, {langauges: item.name})}
+        onPress={() => navigation.navigate(item.screen, {languages: item.name})}
         >
           <Text style={styles.languageText}>{item.name}</Text>
         </TouchableOpacity>
