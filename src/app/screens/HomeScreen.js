@@ -15,7 +15,7 @@ export default function HomeScreen({ navigation }) {
       <Image source={{uri: "https://static.vecteezy.com/system/resources/previews/009/398/577/original/man-avatar-clipart-illustration-free-png.png"}} style={styles.profileImage} />
       <TouchableOpacity style={styles.userName}>
             <Text style={styles.profileText}> Hi John Doe!</Text>    
-              <TouchableOpacity style={styles.profileButton}>
+              <TouchableOpacity style={styles.profileButton} onPress={() => navigation.navigate("Profile")}>
                 <Text style={styles.profileButtonText}>View Profile</Text>
               </TouchableOpacity>
           </TouchableOpacity>
@@ -63,14 +63,6 @@ export default function HomeScreen({ navigation }) {
           {/*New Language*/}
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("New Language")}>
             <Text style={styles.buttonText}>New Language</Text>
-            <Image source={{uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVv_cUUC7tpBp-03iqgyUuojItE9iX3jMlSseGCJsIRg&s"}} style={styles.image} />
-          </TouchableOpacity>
-      </View>
-
-      <View style={styles.buttonItem}> 
-          {/*New Language*/}
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Login")}>
-            <Text style={styles.buttonText}>Sign in</Text>
             <Image source={{uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVv_cUUC7tpBp-03iqgyUuojItE9iX3jMlSseGCJsIRg&s"}} style={styles.image} />
           </TouchableOpacity>
       </View>
