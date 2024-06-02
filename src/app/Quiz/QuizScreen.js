@@ -1,20 +1,44 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import QuizQnsData from './QuizQnsData';
 
-
+import { supabase } from '../../../lib/supabase';
 
   const QuizScreen = ({route, navigation}) => {
-    const { category } = route.params;
-    const questions = QuizQnsData[category];
+    const { category, language } = route.params;
+    const [quizQns, setQuizQns] = useState([]);
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [score, setScore] = useState(0);
     const [showScore, setShowScore] = useState(false);
     const [selected, setSelected] = useState(null);
+  
+    useEffect(() => {
+      async function fetchQns() {
+        try {
+          const { data, error } = await supabase
+            .from('quiz_questions')
+            .select('*')
+            .eq('category_name', category) //filter by category
+            .eq('language', language); //filter by language
+  
+          if (error) {
+            console.error('Error fetching questions:', error.message);
+          } else {
+            setQuizQns(data);
+          }
+        } catch (error) {
+          console.error('Error fetching questions:', error.message);
+        }
+      }
+  
+      fetchQns();
+    }, [category, language]);
+  
+    //fetch data from supabase table
+   
 
     {/*handling answering of question*/}
     const handleAnswerPress = (chosenAnswer) => {
-        const correctAnswer = questions[currentQuestion].correctAnswer;
+        const correctAnswer = quizQns[currentQuestion].correct_answer;
         if (chosenAnswer == correctAnswer) {
         setScore(score + 1);
     }
@@ -22,7 +46,7 @@ import QuizQnsData from './QuizQnsData';
     {/*Updating question num / show final score at end of quiz*/}
 
     const nextQuestion = currentQuestion + 1;
-    if (nextQuestion < questions.length) {
+    if (nextQuestion < quizQns.length) {
         setCurrentQuestion(nextQuestion);
         setSelected(null); // Reset selected option for the next question
     } else {
@@ -36,7 +60,7 @@ if (showScore) {
     return (
     <View style={styles.container}>
         <Text style={styles.title}>Quiz Completed!</Text>
-        <Text style={styles.title}>Your Score {score}/{questions.length}</Text>
+        <Text style={styles.title}>Your Score {score}/{quizQns.length}</Text>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("QuizLang")}>
             <Text style={styles.buttonText}>Back to Categories!</Text>
         </TouchableOpacity>
@@ -44,18 +68,18 @@ if (showScore) {
     );
 }
   
-const current = questions[currentQuestion]
+const current = quizQns[currentQuestion]
     return (
         <View style={styles.container}>
-            <Image source={{ uri: current.imageUrl }} style={styles.image} />
-            <Text style={styles.title}>{current.question}</Text>
-            {current.options.map((option, index) => (
+            <Image source={{ uri: current?.image_url }} style={styles.image} />
+            <Text style={styles.title}>{current?.question}</Text>
+            {current?.options.map((option, index) => (
                 <TouchableOpacity
                 key={index}
                 style={[
                     styles.optionButton,
-                    selected === option && option === current.correctAnswer ? styles.correctOption : null,
-                    selected === option && option !== current.correctAnswer ? styles.wrongOption : null,
+                    selected === option && option === current.correct_answer ? styles.correctOption : null,
+                    selected === option && option !== current.correct_answer ? styles.wrongOption : null,
                 ]}
                 onPress={() => setSelected(option)} // colour changes upon pressing option
                 >
