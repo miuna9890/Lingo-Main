@@ -6,6 +6,7 @@ export default function HomeScreen({ navigation, route }) {
   const [name, setName] = useState('John Doe');
   const [pic, setPic] = useState('https://static.vecteezy.com/system/resources/previews/009/398/577/original/man-avatar-clipart-illustration-free-png.png'); // Default profile picture
   const [bio, setBio] = useState('Bio');
+  const [lessonsCompleted, setLessonsCompleted] = useState(0);
 
   useEffect(() => {
     if (route.params?.name) { // Check if name is passed as a parameter
@@ -17,12 +18,16 @@ export default function HomeScreen({ navigation, route }) {
     if (route.params?.pic) {
       setPic(route.params.pic);
     }
+    if (route.params?.lessonsCompleted) {
+      setLessonsCompleted(route.params.lessonsCompleted);
+    }
   }, [route.params]); //effect will only re-run if route.params?.name or pic or bio changes
 
   useEffect(() => {
     // Fetch profile data if route params are not provided
     if (!route.params) {
       fetchProfile();
+      fetchProgress();
     }
   }, []);
 //display existing profile when sign in
@@ -44,6 +49,25 @@ export default function HomeScreen({ navigation, route }) {
       }
     } catch (error) {
       console.error('Error fetching profile:', error.message);
+    }
+  };
+
+  const fetchProgress = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('progress')
+        .select('lessons_completed')
+        .single();
+
+      if (error) {
+        throw new Error('Error fetching progress');
+      }
+
+      if (data) {
+        setLessonsCompleted(data.lessons_completed || 0);
+      }
+    } catch (error) {
+      console.error('Error fetching progress:', error.message);
     }
   };
 
@@ -79,8 +103,8 @@ export default function HomeScreen({ navigation, route }) {
        <TouchableOpacity>
                 <Text style={styles.progressButtonText}>Your Progress</Text>
         </TouchableOpacity>
-        <Text style={styles.progressText}>Lessons Completed :10</Text>  
-        <Text style={styles.progressText}>Quizzes Completed :10</Text>
+        <Text style={styles.progressText}>Lessons Completed :{lessonsCompleted}</Text>  
+        <Text style={styles.progressText}>Quizzes Completed :Quizzes</Text>
       </View>
 
       </View>
