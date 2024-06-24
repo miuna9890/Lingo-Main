@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Button, TouchableOpacity, Image } from 'react-native';
+import { supabase } from '../../../lib/supabase';
 
 export default function HomeScreen({ navigation, route }) {
   const [name, setName] = useState('John Doe');
@@ -18,14 +19,41 @@ export default function HomeScreen({ navigation, route }) {
     }
   }, [route.params]); //effect will only re-run if route.params?.name or pic or bio changes
 
-  // Reset to default values when route.params are empty (profile deleted)
   useEffect(() => {
-    if (!route.params?.name && !route.params?.bio && !route.params?.pic) {
+    // Fetch profile data if route params are not provided
+    if (!route.params) {
+      fetchProfile();
+    }
+  }, []);
+//display existing profile when sign in
+  const fetchProfile = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('name, bio, profile_pic')
+        .single(); // Fetching the single profile for the current user
+
+      if (error) {
+        throw new Error('Error fetching profile');
+      }
+
+      if (data) { //if no data set back to default if not display data 
+        setName(data.name || 'John Doe');
+        setBio(data.bio || 'Bio');
+        setPic(data.profile_pic || 'https://static.vecteezy.com/system/resources/previews/009/398/577/original/man-avatar-clipart-illustration-free-png.png');
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (route.params?.deletedProfile) { //if deleted set back to default
       setName('John Doe');
       setBio('Bio');
       setPic('https://static.vecteezy.com/system/resources/previews/009/398/577/original/man-avatar-clipart-illustration-free-png.png');
     }
-  }, [route.params]);
+  }, [route.params?.deletedProfile]); //if deleted
 
   return (
     
