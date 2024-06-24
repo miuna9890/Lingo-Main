@@ -115,7 +115,7 @@ export default function ProfileScreen({ navigation }) {
       }
 
       Alert.alert('Profile deleted successfully'); //delete profile 
-      navigation.navigate('Home'); //navigate back to homescreen
+      navigation.navigate('Home',  { deletedProfile: true }); //navigate back to homescreen
     } catch (error) {
       console.error('Error deleting profile:', error.message);
       Alert.alert('Error deleting profile');
