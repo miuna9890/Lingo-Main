@@ -1,9 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Button, TouchableOpacity, Image } from 'react-native';
 
-export default function HomeScreen({ navigation }) {
-  return (
+export default function HomeScreen({ navigation, route }) {
+  const [name, setName] = useState('John Doe');
+  const [pic, setPic] = useState('https://static.vecteezy.com/system/resources/previews/009/398/577/original/man-avatar-clipart-illustration-free-png.png'); // Default profile picture
+  const [bio, setBio] = useState('Bio');
 
+  useEffect(() => {
+    if (route.params?.name) { // Check if name is passed as a parameter
+      setName(route.params.name); // Update the name state variable if new name is passed
+    }
+    if (route.params?.bio) {
+      setBio(route.params.bio);
+    }
+    if (route.params?.pic) {
+      setPic(route.params.pic);
+    }
+  }, [route.params]); //effect will only re-run if route.params?.name or pic or bio changes
+
+  // Reset to default values when route.params are empty (profile deleted)
+  useEffect(() => {
+    if (!route.params?.name && !route.params?.bio && !route.params?.pic) {
+      setName('John Doe');
+      setBio('Bio');
+      setPic('https://static.vecteezy.com/system/resources/previews/009/398/577/original/man-avatar-clipart-illustration-free-png.png');
+    }
+  }, [route.params]);
+
+  return (
     
     <View style={styles.container}>
 
@@ -12,9 +36,10 @@ export default function HomeScreen({ navigation }) {
 
       {/*profile*/}
       <View style={styles.profileContainer}>
-      <Image source={{uri: "https://static.vecteezy.com/system/resources/previews/009/398/577/original/man-avatar-clipart-illustration-free-png.png"}} style={styles.profileImage} />
+      <Image source={{uri: pic}} style={styles.profileImage} />
       <TouchableOpacity style={styles.userName}>
-            <Text style={styles.profileText}> Hi John Doe!</Text>    
+            <Text style={styles.profileText}> Hi {name}!</Text>
+            <Text style={styles.profileText}> {bio}</Text>    
               <TouchableOpacity style={styles.profileButton} onPress={() => navigation.navigate("Profile")}>
                 <Text style={styles.profileButtonText}>View Profile</Text>
               </TouchableOpacity>
@@ -93,6 +118,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly", // Put space between profile and progress
     width: '100%', 
     marginBottom: 20,
+  },
+  profileText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
   },
   title: {
     fontSize: 24,
