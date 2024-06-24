@@ -83,6 +83,24 @@ export default function ProfileScreen({ navigation }) {
     setLoading(false);
   } //create profile and insert into thr profiles table in supabase
 
+  const updateProfile = async () => {
+    setLoading(true);
+    const newPic = pic || "https://thumbs.dreamstime.com/b/female-avatar-icon-women-clipart-png-vector-girl-avatar-women-clipart-bor-bisiness-icon-png-vector-233362315.jpg";
+
+    const { error } = await supabase
+      .from('profiles')
+      .update([{ user_id: userId, name, bio, profile_pic: newPic }])
+      .eq('user_id', userId); // Filter to update the profile based on user_id
+
+    if (error) {
+      Alert.alert('Error updating profile');
+    } else {
+      Alert.alert('Profile updated successfully');
+      navigation.navigate('Home', { name, bio, pic: newPic });
+    }
+    setLoading(false);
+  };
+
   //function to delete profile
   const deleteProfile = async () => {
     try {
@@ -111,7 +129,6 @@ export default function ProfileScreen({ navigation }) {
     <View style={styles.container}>
        <TouchableOpacity onPress={choosePic}> 
         <Text style={styles.buttonText}>Pick a Profile Picture</Text>
-        <Image source={{uri: pic || "https://www.clipartmax.com/png/small/363-3636751_staff-photo-unavailable-avatar-html.png"}} style={styles.profileImage} />
       </TouchableOpacity>
       
       {pic && <Image source={{ uri: pic }} style={styles.image} />}
@@ -128,9 +145,20 @@ export default function ProfileScreen({ navigation }) {
         value={bio}  // Bind the input value to the bio state variable
         onChangeText={setBio} // Update the bio state variable when input changes
         placeholder='Write your Bio here'
+      /> 
+       <Button
+        title="Create / Update Profile"
+        onPress={() => {
+          if (name && bio && pic) {
+            updateProfile();
+          } else {
+            createProfile();
+          }
+        }}
+        disabled={loading}
       />
-      <Button title="Create Profile" onPress={createProfile} disabled={loading} />
       <Button title="Delete Profile" onPress={deleteProfile} disabled={loading} />
+      
     </View>
   );
 }
