@@ -36,6 +36,7 @@ export default function HomeScreen({ navigation, route }) {
       const { data, error } = await supabase
         .from('profiles')
         .select('name, bio, profile_pic')
+        .eq('user_id', userId)
         .single(); // Fetching the single profile for the current user
 
       if (error) {
