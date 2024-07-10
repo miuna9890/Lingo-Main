@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Button, TouchableOpacity, Image } from 'react-native';
 import { supabase } from '../../../lib/supabase';
 import ReminderGoalModal from '../screens/ReminderGoalModal';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 export default function Reminder({ navigation, route }) {
   const [userId, setUserId] = useState(null); // State variable for storing the user ID
@@ -133,6 +134,50 @@ export default function Reminder({ navigation, route }) {
     }
   };
 
+  // Function to toggle completion of a reminder
+  const handleToggleReminder = async (id, completed) => {
+    try {
+      const { data, error } = await supabase
+        .from('reminders')
+        .update({ completed })
+        .eq('id', id);
+
+      if (error) {
+        throw new Error('Error updating reminder');
+      }
+
+      setReminders(
+        reminders.map(reminder =>
+          reminder.id === id ? { ...reminder, completed } : reminder
+        )
+      );
+    } catch (error) {
+      console.error('Error updating reminder:', error.message);
+    }
+  };
+
+  // Function to toggle completion of a goal
+  const handleToggleGoal = async (id, completed) => {
+    try {
+      const { data, error } = await supabase
+        .from('goals')
+        .update({ completed })
+        .eq('id', id);
+
+      if (error) {
+        throw new Error('Error updating goal');
+      }
+
+      setGoals(
+        goals.map(goal =>
+          goal.id === id ? { ...goal, completed } : goal
+        )
+      );
+    } catch (error) {
+      console.error('Error updating goal:', error.message);
+    }
+  };
+
   return (
 
   <View style={styles.container}>
@@ -143,36 +188,60 @@ export default function Reminder({ navigation, route }) {
 
   {/* Display reminders and goals */}
   <View style={styles.listsContainer}>
-    <View style={styles.listContainer}>
-      <Text style={styles.listTitle}>Reminders:</Text>
-      {reminders.map((reminder, index) => (
-         <TouchableOpacity
-         key={index}
-         style={[
-            styles.listItemContainer,
-            reminder.completed && { backgroundColor: 'lightgreen' } // Apply green background if completed
-          ]}
-          onPress={() => handleDeleteReminder(reminder.id)} // Use onLongPress to detect double press
+    
+  <View style={styles.container}>
+  <Text style={styles.listTitle}>Reminders:</Text>
+  {reminders.map((reminder, index) => (
+    <Swipeable
+      key={index}
+      renderRightActions={() => (
+        <TouchableOpacity
+          style={styles.deleteContainer}
+          onPress={() => handleDeleteReminder(reminder.id)}
         >
-        <Text key={index} style={styles.listItem}>{reminder.reminder}</Text>
+          <Text style={styles.deleteText}>Delete</Text>
         </TouchableOpacity>
-      ))}
-    </View>
-    <View style={styles.listContainer}>
-      <Text style={styles.listTitle}>Goals:</Text>
-      {goals.map((goal, index) => (
-          <TouchableOpacity
-          key={index}
-          style={[
-            styles.listItemContainer,
-            goal.completed && { backgroundColor: 'lightgreen' } // Apply green background if completed
-          ]}
-          onPress={() => handleDeleteGoal(goal.id)} // Use onLongPress to detect double press
+      )}
+    >
+      <TouchableOpacity
+        style={[
+          styles.listItemContainer,
+          reminder.completed && { backgroundColor: 'lightgreen' }
+        ]}
+        onPress={() => handleToggleReminder(reminder.id, !reminder.completed)}
+      >
+        <Text style={styles.listItem}>{reminder.reminder}</Text>
+      </TouchableOpacity>
+    </Swipeable>
+  ))}
+</View>
+
+  <View style={styles.container}>
+  <Text style={styles.listTitle}>Goals:</Text>
+  {goals.map((goal, index) => (
+    <Swipeable
+      key={index}
+      renderRightActions={() => (
+        <TouchableOpacity
+          style={styles.deleteContainer}
+          onPress={() => handleDeleteGoal(goal.id)}
         >
-        <Text key={index} style={styles.listItem}>{goal.goal}</Text>
+          <Text style={styles.deleteText}>Delete</Text>
         </TouchableOpacity>
-      ))}
-    </View>
+      )}
+    >
+      <TouchableOpacity
+        style={[
+          styles.listItemContainer,
+          goal.completed && { backgroundColor: 'lightgreen' }
+        ]}
+        onPress={() => handleToggleGoal(goal.id, !goal.completed)}
+      >
+        <Text style={styles.listItem}>{goal.goal}</Text>
+      </TouchableOpacity>
+    </Swipeable>
+  ))}
+</View>
   </View>
 
 {/* Reminder and Goal Modal */}
@@ -222,4 +291,16 @@ const styles = StyleSheet.create({
       listItem: {
         fontSize: 16,
       },
-  });
+      deleteContainer: {
+        backgroundColor: 'red',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 80,
+        marginTop: 5,
+        marginBottom: 5,
+      },
+      deleteText: {
+        color: 'white',
+        fontWeight: 'bold',
+      },
+  }); 
