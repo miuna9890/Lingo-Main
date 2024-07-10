@@ -46,7 +46,7 @@ export default function HomeScreen({ navigation, route }) {
   }, []);
 //display existing profile when sign in
   const fetchProfile = async (userId) => {
-   
+    try {
       const { data, error } = await supabase
         .from('profiles')
         .select('name, bio, profile_pic')
@@ -62,8 +62,11 @@ export default function HomeScreen({ navigation, route }) {
         setBio(data.bio || 'Bio');
         setPic(data.profile_pic || 'https://static.vecteezy.com/system/resources/previews/009/398/577/original/man-avatar-clipart-illustration-free-png.png');
       }
-    
+    } catch (error) {
+      console.error('Error fetching profile:', error.message);
+    }
   };
+
 
   const fetchProgress = async () => {
     try {
@@ -122,18 +125,15 @@ export default function HomeScreen({ navigation, route }) {
 
       </View>
 
-      {/*Welcome text*/}
-      <Text style={styles.title}>LET'S LEARN!</Text>
-
       <View style={styles.buttonContainer}> 
 
       {/*Continue learning and quizzes ina a row*/}
 
         <View style={styles.buttonItem}> 
           {/*Continue learning button*/}
-          <TouchableOpacity style={styles.button}> 
-            <Text style={styles.buttonText}>Continue Learning!</Text>
-            <Image source={{uri: "https://www.wikihow.com/images/thumb/1/12/Teach-Yourself-a-Language-Using-Flashcards-Step-7.jpg/v4-460px-Teach-Yourself-a-Language-Using-Flashcards-Step-7.jpg"}} style={styles.image} />
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Reminders")}> 
+            <Text style={styles.buttonText}>Customize Learning!</Text>
+            <Image source={{uri: "https://www.graduateprogram.org/wp-content/uploads/2023/01/Jan-6-Goal-Setting-for-Students-for-the-New-Year_web.jpg"}} style={styles.image} />
           </TouchableOpacity>
         </View>
 
@@ -158,7 +158,6 @@ export default function HomeScreen({ navigation, route }) {
       </View>
 
       </View>
-
     </View>
   );
 }
@@ -216,6 +215,30 @@ const styles = StyleSheet.create({
     backgroundColor: 'pink',
     padding: 10,
     borderRadius: 5,
+  },
+   buttonsAndListsContainer: {
+    flexDirection: 'row',
+    width: '100%',
+  },
+  buttonsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  listsContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  listsTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  textColumn: {
+    flex: 1,
+    alignItems: 'flex-start',
   },
   profileButton: {
     marginTop: 10,
