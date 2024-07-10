@@ -11,6 +11,8 @@ import QuizLanglist from './Quiz/QuizLanglist';
 import Language from './Language/Language'
 import WelcomeScreen from './screens/WelcomeScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import Reminder from './Customize/Reminder';
+
 
 
 const Stack = createStackNavigator();
@@ -30,6 +32,7 @@ const App = () => {
      <Stack.Screen name ="New Language" component={Language} />
      <Stack.Screen name ="Category" component={FlashcardCategory} />
      <Stack.Screen name ="Flashcards" component={FlashcardScreen} />
+     <Stack.Screen name ="Reminders" component={Reminder} />
 
       </Stack.Navigator>
 
