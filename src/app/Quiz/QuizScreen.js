@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Linking} from 'react-native';
 
 import { supabase } from '../../../lib/supabase';
 
@@ -53,6 +53,12 @@ import { supabase } from '../../../lib/supabase';
         setShowScore(true);
     }
 };
+const shareScoreOnWhatsApp = (score, total) => {
+  const message = `I scored ${score} out of ${total} on LingoCard! Can you beat my score?`;
+  const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+  Linking.openURL(url).catch(err => console.error('Error opening WhatsApp', err));
+};
+
 
 {/*showing score*/}
 
@@ -63,6 +69,9 @@ if (showScore) {
         <Text style={styles.title}>Your Score {score}/{quizQns.length}</Text>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("QuizLang")}>
             <Text style={styles.buttonText}>Back to Categories!</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => shareScoreOnWhatsApp(score, quizQns.length)}>
+                <Text style={styles.buttonText}>Share on WhatsApp</Text>
         </TouchableOpacity>
     </View>
     );
