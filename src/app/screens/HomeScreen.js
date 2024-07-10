@@ -7,6 +7,20 @@ export default function HomeScreen({ navigation, route }) {
   const [pic, setPic] = useState('https://static.vecteezy.com/system/resources/previews/009/398/577/original/man-avatar-clipart-illustration-free-png.png'); // Default profile picture
   const [bio, setBio] = useState('Bio');
   const [lessonsCompleted, setLessonsCompleted] = useState(0);
+  const [userId, setUserId] = useState(null); // State variable for storing the user ID
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { session }, error } = await supabase.auth.getSession(); // Fetch the current session
+      if (session) {
+        setUserId(session.user.id); // Set the user ID if session is available
+        fetchProfile(session.user.id); // Fetch the user's profile if available
+      } else {
+        console.log('Error fetching user session:', error);
+      }
+    };
+    fetchUser(); // Call the fetchUser function
+  }, []);
 
   useEffect(() => {
     if (route.params?.name) { // Check if name is passed as a parameter
@@ -31,8 +45,8 @@ export default function HomeScreen({ navigation, route }) {
     }
   }, []);
 //display existing profile when sign in
-  const fetchProfile = async () => {
-    try {
+  const fetchProfile = async (userId) => {
+   
       const { data, error } = await supabase
         .from('profiles')
         .select('name, bio, profile_pic')
@@ -48,9 +62,7 @@ export default function HomeScreen({ navigation, route }) {
         setBio(data.bio || 'Bio');
         setPic(data.profile_pic || 'https://static.vecteezy.com/system/resources/previews/009/398/577/original/man-avatar-clipart-illustration-free-png.png');
       }
-    } catch (error) {
-      console.error('Error fetching profile:', error.message);
-    }
+    
   };
 
   const fetchProgress = async () => {
