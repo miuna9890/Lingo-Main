@@ -11,11 +11,15 @@ export default function HomeScreen({ navigation, route }) {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession(); // Fetch the current session
-      if (session) {
-        setUserId(session.user.id); // Set the user ID if session is available
-        fetchProfile(session.user.id); // Fetch the user's profile if available
-      } else {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession(); // Fetch the current session
+        if (session) {
+          setUserId(session.user.id); // Set the user ID if session is available
+          await fetchProfile(session.user.id); // Fetch the user's profile if available
+        } else {
+          console.log('Error fetching user session:', error);
+        }
+      } catch (error) {
         console.log('Error fetching user session:', error);
       }
     };
@@ -41,50 +45,23 @@ export default function HomeScreen({ navigation, route }) {
     // Fetch profile data if route params are not provided
     if (!route.params) {
       fetchProfile();
-      fetchProgress();
     }
   }, []);
 //display existing profile when sign in
   const fetchProfile = async (userId) => {
-    try {
+    
       const { data, error } = await supabase
         .from('profiles')
         .select('name, bio, profile_pic')
         .eq('user_id', userId)
         .single(); // Fetching the single profile for the current user
 
-      if (error) {
-        throw new Error('Error fetching profile');
-      }
-
       if (data) { //if no data set back to default if not display data 
         setName(data.name || 'John Doe');
         setBio(data.bio || 'Bio');
         setPic(data.profile_pic || 'https://static.vecteezy.com/system/resources/previews/009/398/577/original/man-avatar-clipart-illustration-free-png.png');
       }
-    } catch (error) {
-      console.error('Error fetching profile:', error.message);
-    }
-  };
-
-
-  const fetchProgress = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('progress')
-        .select('lessons_completed')
-        .single();
-
-      if (error) {
-        throw new Error('Error fetching progress');
-      }
-
-      if (data) {
-        setLessonsCompleted(data.lessons_completed || 0);
-      }
-    } catch (error) {
-      console.error('Error fetching progress:', error.message);
-    }
+    
   };
 
   useEffect(() => {

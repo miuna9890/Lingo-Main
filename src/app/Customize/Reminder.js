@@ -93,7 +93,9 @@ export default function Reminder({ navigation, route }) {
       const { error } = await supabase
         .from('reminders')
         .delete()
+        .eq('user_id', userId)
         .eq('id', id);
+        
 
       if (error) {
         throw new Error('Error deleting reminder');
@@ -259,7 +261,7 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       padding: 20,
-      backgroundColor: '#E91E63',  /*darkpink*/
+      backgroundColor: 'pink',  /*darkpink*/
     },
     buttonsContainer: {
       flexDirection: 'row',
@@ -281,6 +283,7 @@ const styles = StyleSheet.create({
       fontSize: 18,
       fontWeight: 'bold',
       marginBottom: 10,
+      color: "#E91E63", /*darkpink*/
     },
     listItemContainer: {
         backgroundColor: '#f9f9f9',
