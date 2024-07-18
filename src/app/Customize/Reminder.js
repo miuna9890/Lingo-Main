@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Button, TouchableOpacity, Image } from 'react-native';
 import { supabase } from '../../../lib/supabase';
 import ReminderGoalModal from '../screens/ReminderGoalModal';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 export default function Reminder({ navigation, route }) {
   const [userId, setUserId] = useState(null); // State variable for storing the user ID
@@ -87,26 +86,7 @@ export default function Reminder({ navigation, route }) {
       console.error('Error saving reminder:', error.message);
     }
   };
-   // Function to delete a reminder from Supabase
-   const handleDeleteReminder = async (id) => {
-    try {
-      const { error } = await supabase
-        .from('reminders')
-        .delete()
-        .eq('user_id', userId)
-        .eq('id', id);
-        
-
-      if (error) {
-        throw new Error('Error deleting reminder');
-      }
-
-      setReminders(reminders.filter(reminder => reminder.id !== id));
-    } catch (error) {
-      console.error('Error deleting reminder:', error.message);
-    }
-  };
-
+  
   const saveGoalToSupabase = async (goal) => {
     try {
       const { data, error } = await supabase
@@ -115,68 +95,6 @@ export default function Reminder({ navigation, route }) {
       if (error) throw error;
     } catch (error) {
       console.error('Error saving goal:', error.message);
-    }
-  };
-
-  // Function to delete a goal from Supabase
-  const handleDeleteGoal = async (id) => {
-    try {
-      const { error } = await supabase
-        .from('goals')
-        .delete()
-        .eq('id', id);
-
-      if (error) {
-        throw new Error('Error deleting goal');
-      }
-
-      setGoals(goals.filter(goal => goal.id !== id));
-    } catch (error) {
-      console.error('Error deleting goal:', error.message);
-    }
-  };
-
-  // Function to toggle completion of a reminder
-  const handleToggleReminder = async (id, completed) => {
-    try {
-      const { data, error } = await supabase
-        .from('reminders')
-        .update({ completed })
-        .eq('id', id);
-
-      if (error) {
-        throw new Error('Error updating reminder');
-      }
-
-      setReminders(
-        reminders.map(reminder =>
-          reminder.id === id ? { ...reminder, completed } : reminder
-        )
-      );
-    } catch (error) {
-      console.error('Error updating reminder:', error.message);
-    }
-  };
-
-  // Function to toggle completion of a goal
-  const handleToggleGoal = async (id, completed) => {
-    try {
-      const { data, error } = await supabase
-        .from('goals')
-        .update({ completed })
-        .eq('id', id);
-
-      if (error) {
-        throw new Error('Error updating goal');
-      }
-
-      setGoals(
-        goals.map(goal =>
-          goal.id === id ? { ...goal, completed } : goal
-        )
-      );
-    } catch (error) {
-      console.error('Error updating goal:', error.message);
     }
   };
 
@@ -194,54 +112,34 @@ export default function Reminder({ navigation, route }) {
   <View style={styles.container}>
   <Text style={styles.listTitle}>Reminders:</Text>
   {reminders.map((reminder, index) => (
-    <Swipeable
-      key={index}
-      renderRightActions={() => (
-        <TouchableOpacity
-          style={styles.deleteContainer}
-          onPress={() => handleDeleteReminder(reminder.id)}
-        >
-          <Text style={styles.deleteText}>Delete</Text>
-        </TouchableOpacity>
-      )}
-    >
+    
       <TouchableOpacity
         style={[
           styles.listItemContainer,
-          reminder.completed && { backgroundColor: 'lightgreen' }
+         
         ]}
-        onPress={() => handleToggleReminder(reminder.id, !reminder.completed)}
+       
       >
         <Text style={styles.listItem}>{reminder.reminder}</Text>
       </TouchableOpacity>
-    </Swipeable>
+   
   ))}
 </View>
 
   <View style={styles.container}>
   <Text style={styles.listTitle}>Goals:</Text>
   {goals.map((goal, index) => (
-    <Swipeable
-      key={index}
-      renderRightActions={() => (
-        <TouchableOpacity
-          style={styles.deleteContainer}
-          onPress={() => handleDeleteGoal(goal.id)}
-        >
-          <Text style={styles.deleteText}>Delete</Text>
-        </TouchableOpacity>
-      )}
-    >
+    
       <TouchableOpacity
         style={[
           styles.listItemContainer,
-          goal.completed && { backgroundColor: 'lightgreen' }
+         
         ]}
-        onPress={() => handleToggleGoal(goal.id, !goal.completed)}
+     
       >
         <Text style={styles.listItem}>{goal.goal}</Text>
       </TouchableOpacity>
-    </Swipeable>
+ 
   ))}
 </View>
   </View>
