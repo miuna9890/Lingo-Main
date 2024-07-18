@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { AppState } from 'react-native'
-import { Alert, StyleSheet, View, Button, TextInput } from 'react-native'
+import { Alert, StyleSheet, View, Button, TextInput, Text, Image } from 'react-native'
 import { supabase } from '../../../lib/supabase'
 import { useNavigation } from '@react-navigation/native';
 
@@ -61,8 +61,11 @@ export default function Auth() {
 
   return (
     <View style={styles.container}>
+      <Image source={require('../../../assets/logo.png')} style={styles.logo} />
+      <Text style={styles.appName}>LINGOCARD</Text>
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <TextInput
+           style={styles.input}
           onChangeText={(text) => setEmail(text)}
           value={email}
           placeholder="email@address.com"
@@ -71,6 +74,7 @@ export default function Auth() {
       </View>
       <View style={styles.verticallySpaced}>
         <TextInput
+         style={styles.input}
           onChangeText={(text) => setPassword(text)}
           value={password}
           secureTextEntry={true}
@@ -91,15 +95,36 @@ export default function Auth() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
-    padding: 12,
+    flex: 1,
+    backgroundColor: "pink", // Pink background
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
   verticallySpaced: {
-    paddingTop: 4,
-    paddingBottom: 4,
+    paddingTop: 10,
+    paddingBottom: 10,
     alignSelf: 'stretch',
   },
   mt20: {
     marginTop: 20,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+  },
+  appName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 40,
+    color: "#E91E63",
+  },
+  input: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 5,
+    padding: 10,
+    height: 40,
+    marginBottom: 10,
   },
 })

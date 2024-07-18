@@ -11,7 +11,7 @@ const FlashcardScreen = ({ route, navigation }) => {
   const { category, language } = route.params;
   const [flashcards, setFlashcards] = useState([]);
   const [currentCard, setCurrentCard] = useState(0); //keep track of the card
-  const [lessonsCompleted, setLessonsCompleted] = useState(0); // State to track lessons completed
+
 
   useEffect(() => {
     async function fetchFlashcards() {
@@ -35,36 +35,11 @@ const FlashcardScreen = ({ route, navigation }) => {
     fetchFlashcards();
   }, [category, language]);
 
-  //fetch data from supabase table
-
-  //display existing profile when sign in
-  useEffect(() => {
-    async function fetchProgress() {
-    try {
-      const { data, error } = await supabase
-        .from('progress')
-        .select('lessons_completed')
-        .single(); // Fetching the single profile for the current user
-
-        if (error) {
-          console.error('Error fetching progress:', error.message);
-        } else {
-          setLessonsCompleted(data?.lessons_completed || 0);
-        }
-      } catch (error) {
-        console.error('Error fetching progress:', error.message);
-      }
-    }
-
-    fetchProgress();
-  }, []);
-
   const handleNext = async () => { //function to handle the next button
     if (currentCard < flashcards.length - 1) { //within limit?
       setCurrentCard(currentCard + 1); //move to next
     } else { //end of flascard deck, update the lesson as completed
-      await updateProgress(); // Update progress when reaching the end of flashcards
-      navigation.navigate('Home', { lessonsCompleted: lessonsCompleted + 1 }); // Navigate back to Home with updated lesson count
+      navigation.navigate('Home'); // Navigate back to Home with updated lesson count
     }
   };
 
@@ -74,34 +49,7 @@ const FlashcardScreen = ({ route, navigation }) => {
     }
   };
 
-  const updateProgress = async () => {
-    try {
-      // Fetch the user profile to get the user ID
-    const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('user_id')
-    .single();
-
-  if (profileError) {
-    throw new Error('Error fetching user profile');
-  }
-  const { id: user_id } = profile;
-   // Upsert (insert or update) the progress record for the user
-      const { error } = await supabase
-        .from('progress') //from the supabase table progress
-        .upsert({user_id, lessons_completed: lessonsCompleted + 1}) // Increment lessons completed
-        .eq('user_id', user_id); // Specify the WHERE clause here
-
-      if (error) {
-        console.error('Error updating progress:', error.message);
-      }
-    } catch (error) {
-      console.error('Error updating progress:', error.message);
-    }
-  };
-
   const currentFlashCard = flashcards[currentCard]; //start from beginning
-
 
   return (
     <View style={styles.container}>
@@ -125,7 +73,7 @@ const FlashcardScreen = ({ route, navigation }) => {
         <TouchableOpacity onPress={handleNext} style={styles.navButton}>
           <Text style={styles.navButtonText}>Next</Text>
         </TouchableOpacity>
-      </View>
+        </View>
     </View>
   );
 };

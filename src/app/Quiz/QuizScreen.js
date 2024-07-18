@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Linking} from 'react-native';
-
 import { supabase } from '../../../lib/supabase';
 
   const QuizScreen = ({route, navigation}) => {
@@ -10,6 +9,7 @@ import { supabase } from '../../../lib/supabase';
     const [score, setScore] = useState(0);
     const [showScore, setShowScore] = useState(false);
     const [selected, setSelected] = useState(null);
+
   
     useEffect(() => {
       async function fetchQns() {
@@ -53,8 +53,8 @@ import { supabase } from '../../../lib/supabase';
         setShowScore(true);
     }
 };
-const shareScoreOnWhatsApp = (score, total) => {
-  const message = `I scored ${score} out of ${total} on LingoCard! Can you beat my score?`;
+const shareScoreOnWhatsApp = () => {
+  const message = `I scored ${score} out of ${quizQns.length} on LingoCard! Can you beat my score?`;
   const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
   Linking.openURL(url).catch(err => console.error('Error opening WhatsApp', err));
 };
