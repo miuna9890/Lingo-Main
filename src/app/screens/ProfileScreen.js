@@ -42,9 +42,8 @@ export default function ProfileScreen({ navigation }) {
           setBio(data.bio || ''); // Update bio state variable if profile exists
           setPic(data.profile_pic || ''); // Update pic state variable if profile exists
         }
-      } catch (error) {
-        console.error('Error fetching profile:', error.message);
-        // Handle error (e.g., show error message to user)
+      } catch {
+        // Handle error
       } finally {
         setLoading(false);
       }

@@ -2,10 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Button, TouchableOpacity, StyleSheet } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = 'https://ofuxcybiaalpnafsswou.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9mdXhjeWJpYWFscG5hZnNzd291Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTcyNTA5MzUsImV4cCI6MjAzMjgyNjkzNX0.RujmbMzYZv7V4vvUx06w8Z5e5NejLA8H_ZCs6hDYkOI';
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from '../../../lib/supabase';
 
 const QuizLanglist = ({navigation}) => {
   const [languageList, setLanguageList] = useState([]);
