@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Button, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, Button, TouchableOpacity, Image, Alert } from 'react-native';
 import { supabase } from '../../../lib/supabase';
 import ReminderGoalModal from '../screens/ReminderGoalModal';
 
@@ -62,41 +62,145 @@ export default function Reminder({ navigation, route }) {
     }
   };
 
-  // Function to save a new reminder to Supabase
-  const handleSaveReminder = async (reminder) => {
-    const newReminder = { reminder, completed: false};
-    setReminders([...reminders, newReminder]);
-    await saveReminderToSupabase(newReminder);
-  };
+    // Function to save a new reminder to Supabase
+    const handleSaveReminder = async (reminder) => {
+      try {
+        const { data, error } = await supabase
+          .from('reminders')
+          .insert([{ user_id: userId, reminder, completed: false }])
+          .select();
+        if (error) throw error;
+  
+        const newReminder = data[0]; // Retrieve the newly created reminder with ID
+        setReminders([...reminders, newReminder]);
+      } catch (error) {
+        console.error('Error saving reminder:', error.message);
+      }
+    };
 
-  // Function to save a new goal to Supabase
-  const handleSaveGoal = async (goal) => {
-    const newGoal = { goal, completed: false };
-    setGoals([...goals, newGoal]);
-    await saveGoalToSupabase(newGoal);
-  };
+    // Function to save a new goal to Supabase
+    const handleSaveGoal = async (goal) => {
+      try {
+        const { data, error } = await supabase
+          .from('goals')
+          .insert([{ user_id: userId, goal, completed: false }])
+          .select();
+        if (error) throw error;
+  
+        const newGoal = data[0]; // Retrieve the newly created goal with ID
+        setGoals([...goals, newGoal]);
+      } catch (error) {
+        console.error('Error saving goal:', error.message);
+      }
+    };
 
-  const saveReminderToSupabase = async (reminder) => {
+  const deleteReminder = async (id) => {
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('reminders')
-        .insert([{ user_id: userId, reminder: reminder.reminder, completed: reminder.completed  }]); // Insert reminder with user ID
+        .delete()
+        .eq('id', id)
+        .eq('user_id', userId);
       if (error) throw error;
+      // Update state to remove the deleted reminder
+      setReminders(reminders.filter(reminder => reminder.id !== id));
     } catch (error) {
-      console.error('Error saving reminder:', error.message);
+      console.error('Error deleting reminder:', error.message);
+    }
+  };
+
+  const confirmReminderAction = (id, completed) => {
+    Alert.alert(
+      "Reminder Action",
+      completed ? "Mark this reminder as incomplete?" : "What do you want to do with this reminder?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: completed ? "Mark as Incomplete" : "Mark as Completed", 
+          onPress: () => handleMarkAsCompleted(id, !completed) 
+        },
+        { 
+          text: "Delete", 
+          onPress: () => deleteReminder(id) 
+        }
+      ]
+    );
+  };
+
+  const deleteGoal = async (id) => {
+    try {
+      const { error } = await supabase
+        .from('goals')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', userId);
+      if (error) throw error;
+      // Update state to remove the deleted reminder
+      setGoals(goals.filter(goals => goals.id !== id));
+    } catch (error) {
+      console.error('Error deleting goal:', error.message);
+    }
+  };
+
+  const handleMarkAsCompleted = async (id, completed) => {
+    try {
+      const { error } = await supabase
+        .from('reminders')
+        .update({ completed })
+        .eq('id', id)
+        .eq('user_id', userId);
+  
+      if (error) throw error;
+  
+      // Update state to reflect the change
+      setReminders(reminders.map(reminder =>
+        reminder.id === id ? { ...reminder, completed } : reminder
+      ));
+    } catch (error) {
+      console.error('Error updating reminder:', error.message);
     }
   };
   
-  const saveGoalToSupabase = async (goal) => {
+
+  const confirmGoalAction = (id, completed) => {
+    Alert.alert(
+      "Goal Action",
+      completed ? "Mark this goal as incomplete?" : "What do you want to do with this goal?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: completed ? "Mark as Incomplete" : "Mark as Completed", 
+          onPress: () => handleMarkAsCompletedGoal(id, !completed) 
+        },
+        { 
+          text: "Delete", 
+          onPress: () => deleteGoal(id) 
+        }
+      ]
+    );
+  };
+  const handleMarkAsCompletedGoal = async (id, completed) => {
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('goals')
-        .insert([{ user_id: userId, goal: goal.goal, completed: goal.completed }]); // Insert goal with user ID
+        .update({ completed })
+        .eq('id', id)
+        .eq('user_id', userId);
+  
       if (error) throw error;
+  
+      // Update state to reflect the change
+      setGoals(goals.map(goal =>
+        goal.id === id ? { ...goal, completed } : goal
+      ));
     } catch (error) {
-      console.error('Error saving goal:', error.message);
+      console.error('Error updating goal:', error.message);
     }
   };
+  
+  
+
+
 
   return (
 
@@ -113,13 +217,11 @@ export default function Reminder({ navigation, route }) {
   <Text style={styles.listTitle}>Reminders:</Text>
   {reminders.map((reminder, index) => (
     
-      <TouchableOpacity
-        style={[
-          styles.listItemContainer,
-         
-        ]}
-       
-      >
+    <TouchableOpacity
+    key={reminder.id}
+    style={[styles.listItemContainer, { backgroundColor: reminder.completed ? 'lightgreen' : '#f9f9f9' }]}
+    onPress={() => confirmReminderAction(reminder.id, reminder.completed)}
+  >
         <Text style={styles.listItem}>{reminder.reminder}</Text>
       </TouchableOpacity>
    
@@ -130,13 +232,11 @@ export default function Reminder({ navigation, route }) {
   <Text style={styles.listTitle}>Goals:</Text>
   {goals.map((goal, index) => (
     
-      <TouchableOpacity
-        style={[
-          styles.listItemContainer,
-         
-        ]}
-     
-      >
+    <TouchableOpacity
+    key={goal.id}
+    style={[styles.listItemContainer, { backgroundColor: goal.completed ? 'lightgreen' : '#f9f9f9' }]}
+    onPress={() => confirmGoalAction(goal.id, goal.completed)}
+  >
         <Text style={styles.listItem}>{goal.goal}</Text>
       </TouchableOpacity>
  

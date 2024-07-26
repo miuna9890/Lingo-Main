@@ -96,7 +96,7 @@ export default function HomeScreen({ navigation, route }) {
        <TouchableOpacity>
                 <Text style={styles.progressButtonText}>Your Progress</Text>
         </TouchableOpacity>
-        <Text style={styles.progressText}>Lessons Completed :{lessonsCompleted}</Text>  
+        <Text style={styles.progressText}>Lessons Completed :Lessons</Text>  
         <Text style={styles.progressText}>Quizzes Completed :Quizzes</Text>
       </View>
 
